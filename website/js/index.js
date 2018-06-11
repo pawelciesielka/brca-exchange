@@ -5,6 +5,7 @@
 // shims for older browsers
 import SourceReportsTile from "./components/SourceReportsTile";
 import AlleleFrequenciesTile from "./components/AlleleFrequenciesTile";
+import SilicoPredTile from "./components/insilicopred/SilicoPredTile";
 
 require('babel/polyfill');
 require('es5-shim');
@@ -735,7 +736,7 @@ var VariantDetail = React.createClass({
         let groupsEmpty = 0;
         let totalRowsEmpty = 0;
 
-        const groupTables = _.map(groups, ({ groupTitle, innerCols, reportSource, reportBinding, alleleFrequencies, innerGroups }) => {
+        const groupTables = _.map(groups, ({ groupTitle, innerCols, reportSource, reportBinding, alleleFrequencies, inSilicoPred, innerGroups }) => {
             let rowsEmpty = 0;
 
             // if it's a report source (i.e. the key reportSource is defined), then we defer
@@ -791,6 +792,20 @@ var VariantDetail = React.createClass({
                         }}
                         showHelp={this.showHelp}
                         variant={variant}
+                    />
+                );
+            }
+
+            if (inSilicoPred) {
+                return (
+                    <SilicoPredTile
+                        groupTitle={groupTitle}
+                        onChangeGroupVisibility={this.onChangeGroupVisibility}
+                        hideEmptyItems={this.state.hideEmptyItems}
+                        onDimsChanged={() => {
+                            setTimeout(() => { this.forceUpdate(); }, 0);
+                        }}
+                        showHelp={this.showHelp}
                     />
                 );
             }
