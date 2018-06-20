@@ -52,6 +52,10 @@ function isEmptyField(value) {
     return v === '' || v === '-' || v === 'None';
 }
 
+function isNumeric(n) {
+    return !isNaN(parseFloat(n)) && isFinite(n);
+}
+
 
 // attempts to parse the given date string using a variety of formats,
 // returning the formatted result as something like '08 September 2016'.
@@ -209,6 +213,11 @@ function sentenceCase(str) {
     return str.replace(/\b\S/g, (t) => t.toUpperCase() );
 }
 
+function capitalize(w) {
+    return w.charAt(0).toUpperCase() + w.substr(1);
+}
+
+
 function getAminoAcidCode(hgvsProtein) {
     let trimmedHgvs = hgvsProtein.replace(/[0-9()]/g, '');
     if (trimmedHgvs.length < 3) {
@@ -227,6 +236,7 @@ function getAminoAcidCode(hgvsProtein) {
 module.exports = {
     getAminoAcidCode,
     isEmptyField,
+    isNumeric,
     normalizeDateFieldDisplay,
     normalizedFieldDisplay,
     generateLinkToGenomeBrowser,
@@ -234,5 +244,6 @@ module.exports = {
     abbreviatedSubmitter,
     sentenceCase,
     reformatDate,
-    dateKeys
+    dateKeys,
+    capitalize
 };
