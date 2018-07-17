@@ -576,20 +576,9 @@ var VariantDetail = React.createClass({
         // stop the page from scrolling to the top (due to navigating to the fragment '#')
         event.preventDefault();
 
-        // the event target is actually the span *inside* the 'a' tag, but we need to check the 'a' tag for the
-        // collapsed state
-        const collapsingElemParent = event.target.parentElement;
-
-        let willBeCollapsed = true;
-
-        collapsingElemParent.childNodes.forEach(function(child) {
-            // FIXME: there must be a better way to get at the panel's state than reading the class
-            // Maybe we'll subclass Panel and let it handle its own visibility persistence.
-            if (child.getAttribute("class") === "collapsed") {
-                // if it's already collapsed, this method should expand it
-                willBeCollapsed = false;
-            }
-        });
+        // since items are visible by default, the item will be collapsed if there's no entry for it in local storage,
+        // or if the current entry is anything but collapsed (i.e., "true")
+        const willBeCollapsed = (localStorage.getItem("collapse-group_" + groupTitle) !== "true");
         localStorage.setItem("collapse-group_" + groupTitle, willBeCollapsed);
 
         // defer re-layout until the state change has completed
