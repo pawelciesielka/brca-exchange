@@ -29,7 +29,7 @@ test:
 unit_tests_docker:
 	docker run --rm -it \
 		--user=`id -u`:`id -g` \
-    --entrypoint pytest
+    --entrypoint pytest \
 		$(IMAGE_NAME)
 
 
