@@ -30,6 +30,14 @@ def main():
 
     concordance.writeheader()
 
+    concordance_count = 0
+    discordance_count = 0
+    discordance_count_by_expert_feature = {}
+    discordance_count_by_prior = {"applicable_prior": 0,
+                                  "protein_prior": 0,
+                                  "de_novo_prior": 0,
+                                  "refsplice_prior": 0}
+
     concordance_variants = {}
 
     # gather all relevant data from bx_priors and store in a dict
@@ -45,6 +53,9 @@ def main():
     # add all relevant data from sean's priors to the dict if variant was found in bx data
     # (combine sean data with bx priors data)
     for sean_variant in sean_priors:
+        # store all possible expert_feature values from sean's data
+        discordance_count_by_expert_feature[sean_variant["expert_feature"]] = 0
+
         key = sean_variant["nthgvs"].lower()
         if key in concordance_variants:
             for field in relevant_fields_from_sean:
@@ -59,17 +70,38 @@ def main():
         bx_refsplice_prior_equivalent = variant["refAccPrior"] if isEmpty(variant["refDonorPrior"]) else variant["refDonorPrior"]
 
         # if equivalent fields are equal in value (or both considered empty), priors are concordant
-        if ((variant["applicable_prior"] != variant["applicablePrior"] and not checkIfBothFieldsEmpty(variant["applicable_prior"], variant["applicablePrior"]) or
-            variant["protein_prior"] != variant["proteinPrior"] and not checkIfBothFieldsEmpty(variant["protein_prior"], variant["proteinPrior"])  or
-            variant["de_novo_prior"] != variant["deNovoDonorPrior"] and not checkIfBothFieldsEmpty(variant["de_novo_prior"], variant["deNovoDonorPrior"]) or
-            variant["refsplice_prior"] != bx_refsplice_prior_equivalent and not checkIfBothFieldsEmpty(variant["refsplice_prior"], bx_refsplice_prior_equivalent))):
+        if variant["applicable_prior"] != variant["applicablePrior"] and not checkIfBothFieldsEmpty(variant["applicable_prior"], variant["applicablePrior"]):
             concordant = "False"
+            discordance_count_by_prior["applicable_prior"] += 1
+
+        if variant["protein_prior"] != variant["proteinPrior"] and not checkIfBothFieldsEmpty(variant["protein_prior"], variant["proteinPrior"]):
+            concordant = "False"
+            discordance_count_by_prior["protein_prior"] += 1
+
+        if variant["de_novo_prior"] != variant["deNovoDonorPrior"] and not checkIfBothFieldsEmpty(variant["de_novo_prior"], variant["deNovoDonorPrior"]):
+            concordant = "False"
+            discordance_count_by_prior["de_novo_prior"] += 1
+
+        if variant["refsplice_prior"] != bx_refsplice_prior_equivalent and not checkIfBothFieldsEmpty(variant["refsplice_prior"], bx_refsplice_prior_equivalent):
+            concordant = "False"
+            discordance_count_by_prior["refsplice_prior"] += 1
 
         variant["concordant"] = concordant
 
+
         # only output variants that have data from sean
         if not isEmpty(variant['nthgvs']):
+            if variant["concordant"] == "True":
+                concordance_count += 1
+            else:
+                discordance_count += 1
+                discordance_count_by_expert_feature[variant['expert_feature']] += 1
             concordance.writerow(variant)
+
+    print concordance_count
+    print discordance_count
+    print discordance_count_by_expert_feature
+    print discordance_count_by_prior
 
 
 if __name__ == "__main__":
