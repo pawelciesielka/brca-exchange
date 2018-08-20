@@ -21,7 +21,6 @@ var ColumnCheckbox = require('./ColumnCheckbox');
 var {getDefaultExpertColumns, getDefaultResearchColumns, getAllSources} = require('./VariantTableDefaults');
 var {State} = require('react-router');
 var alleleFrequencyCharts = require('./AlleleFrequencyCharts');
-var mupitStructure = require('./MupitStructure');
 
 require('react-data-components-bd2k/css/table-twbs.css');
 
@@ -238,13 +237,13 @@ const researchModeGroups = [
     },
 
     {groupTitle: 'CRAVAT - MuPIT 3D Protein View', internalGroupName: 'Mupit Structure', innerCols: [
-        {title: 'Mupit Structure', prop: 'Mupit_Structure', replace: mupitStructure, tableKey: false, dummy: true}
+        {title: 'Mupit Structure', prop: 'Mupit_Structure', tableKey: false, dummy: true}
     ]},
 ];
 
 // subColumns populate the column selection checkboxes.
-// They should match the variant detail groupings.
-const subColumns = _.map(researchModeGroups, function (group) {
+// They should match the variant detail groupings unless hideFromColumnSelection is true.
+const subColumns = _.map(_.filter(researchModeGroups, function(group) { return !group.hideFromColumnSelection; }), function (group) {
     if (group.hasOwnProperty('innerCols')) {
         return {
             subColTitle: group.groupTitle,
