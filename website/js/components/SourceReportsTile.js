@@ -111,8 +111,8 @@ export default class SourceReportsTile extends React.Component {
 
             // extract fields we care about from the submission data
             const formattedCols = this.props.reportBinding.cols
-                .map(({ title, prop, helpKey, noHelpLink }) => ({
-                    title, prop, helpKey, noHelpLink, value: submissionData[prop]
+                .map(({ title, prop, helpKey, noHelpLink, render, field }) => ({
+                    title, prop, helpKey, noHelpLink, render, field, value: submissionData[prop]
                 }));
 
             return (

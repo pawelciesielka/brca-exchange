@@ -3,7 +3,6 @@
 'use strict';
 
 import React from "react";
-import {CollapsableMixin, Table} from "react-bootstrap";
 import classNames from 'classnames';
 import util from '../util';
 import KeyInline from './KeyInline';
@@ -136,15 +135,19 @@ const VariantSubmitter = React.createClass({
         const {submitter, cols, data} = this.props;
 
         // for each panel, construct key-value pairs as a row of the table
-        const submitterRows = cols.map(({prop, title, value, noHelpLink}) => {
+        const submitterRows = cols.map(({prop, field, title, value, render, noHelpLink}) => {
+            field = field || prop;
             const isEmptyValue = util.isEmptyField(value);
-            const rowItem = util.getFormattedFieldByProp(prop, data);
+            // if a render function is specified for this prop, use that instead of the usual formatter
+            const rowItem = (render)
+                ? render(value)
+                : util.getFormattedFieldByProp(prop, data);
 
             return (
-                <tr key={prop} className={ (isEmptyValue && this.props.hideEmptyItems) ? "variantfield-empty" : "" }>
+                <tr key={field} className={ (isEmptyValue && this.props.hideEmptyItems) ? "variantfield-empty" : "" }>
                     <KeyInline tableKey={title} noHelpLink={noHelpLink}
-                        tooltip={this.props.tooltips && this.props.tooltips["report-" + slugify(prop)]}
-                        onClick={(event) => this.props.showHelp(event, "report-" + prop)}
+                        tooltip={this.props.tooltips && this.props.tooltips["report-" + slugify(field)]}
+                        onClick={(event) => this.props.showHelp(event, "report-" + field)}
                     />
                     <td><span className="row-value">{rowItem}</span></td>
                 </tr>
