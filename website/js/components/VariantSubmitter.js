@@ -3,8 +3,9 @@
 'use strict';
 
 import React from "react";
+import {CollapsableMixin, Table, OverlayTrigger, Popover} from "react-bootstrap";
 import classNames from 'classnames';
-import util from '../util';
+import util, {mapLOVDSymbols} from '../util';
 import KeyInline from './KeyInline';
 
 import slugify from '../slugify';
@@ -50,6 +51,20 @@ function getMarksForReviewStatus(status) {
     );
 }
 
+const LOVDAffectNote = React.createClass({
+    render() {
+        const { text } = this.props;
+
+        const popper = (
+            <Popover>
+                <span>Variant effect submitted by curator.</span>
+            </Popover>
+        );
+
+        return <OverlayTrigger placement='top' overlay={popper}><span>{text}</span></OverlayTrigger>;
+    }
+});
+
 const VariantSubmitter = React.createClass({
     mixins: [CollapsableMixin],
 
@@ -86,10 +101,11 @@ const VariantSubmitter = React.createClass({
         }
         else if (source === 'LOVD') {
             const variantEffect = util.getFormattedFieldByProp("Variant_effect_LOVD", data);
+            const curatorEffect = variantEffect.split("/")[1];
 
             extraHeaderItems = (
                 <div style={{whiteSpace: 'nowrap', overflow: 'hidden'}}>
-                {`Variant Effect: ${variantEffect}`}
+                    <LOVDAffectNote text={`Variant Effect: ${mapLOVDSymbols(curatorEffect)}, ${curatorEffect}`} />
                 </div>
             );
         }

@@ -236,6 +236,21 @@ function getAminoAcidCode(hgvsProtein) {
     }
 }
 
+function mapLOVDSymbols(x) {
+    const map = {
+        '+': 'Affects Function',
+        '+?': 'Probably Affects Function',
+        '?': 'Unknown',
+        '-': 'Doesn\'t Affect Function',
+        '-?': 'Probably Doesn\'t Affect Function',
+        '.': 'Unclassified',
+        '+*': 'Present but Unassociated with Phenotype',
+        '#': 'Present but Unassociated with Phenotype',
+    };
+
+    return (map[x]) ? map[x] : "N/A";
+}
+
 
 module.exports = {
     getAminoAcidCode,
@@ -249,5 +264,6 @@ module.exports = {
     sentenceCase,
     reformatDate,
     dateKeys,
-    capitalize
+    capitalize,
+    mapLOVDSymbols
 };

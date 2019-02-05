@@ -10,6 +10,8 @@
 /*global module: false, require: false, window: false */
 'use strict';
 
+import {mapLOVDSymbols} from "./util";
+
 var {computeReviewStatusScore} = require("./components/VariantSubmitter");
 
 var React = require('react');
@@ -149,8 +151,18 @@ const researchModeGroups = [
                 {title: 'Submitter(s)', prop: 'Submitters_LOVD'},
 
                 // added this field (redundantly?) b/c it's not noticeable in the header
-                {title: 'Variant Effect', prop: 'Variant_effect_LOVD'},
-
+                {title: 'Submitter\'s Variant Effect', field: 'Variant_effect_LOVD_Submitter', prop: 'Variant_effect_LOVD',
+                    render: x => {
+                        const s = x.split("/")[0];
+                        return `${mapLOVDSymbols(s)}, ${s}`;
+                    }
+                },
+                {title: 'Curator\'s Variant Effect', field: 'Variant_effect_LOVD_Curator', prop: 'Variant_effect_LOVD',
+                    render: x => {
+                        const s = x.split("/")[1];
+                        return `${mapLOVDSymbols(s)}, ${s}`;
+                    }
+                },
                 {title: 'Variant Data Type', prop: 'Genetic_origin_LOVD'},
                 {title: 'Individuals', prop: 'Individuals_LOVD'},
                 {title: 'Variant ID', prop: 'DBID_LOVD'},
